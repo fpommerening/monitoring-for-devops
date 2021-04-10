@@ -1,0 +1,19 @@
+groups:
+  - name: my_alert_rules
+    rules:
+      - alert: Blackbox_Host_Down
+        expr: probe_success == 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: host down (instance {{ $labels.instance }})
+
+      - alert: Docker_Service_Not_Active
+        expr: node_systemd_unit_state{name=~"docker.service|docker.socket", state="active"} == 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host SystemD service not active (instance {{ $labels.instance }})
+          description: SystemD service not active\n VALUE = {{ $value }}\n  LABELS {{ $labels }}

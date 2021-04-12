@@ -20,7 +20,7 @@ namespace FP.Monitoring.PrometheusNet.Business
                 End = end
             });
 
-            MyMetrics.MeetupsCount.Inc();
+            MyMetrics.MeetupsCount.WithLabels(loaction).Inc();
 
             await Task.Delay(TimeSpan.FromMilliseconds(500));
         }

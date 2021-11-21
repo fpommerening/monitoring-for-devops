@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysqld-exporter-svc
+spec:
+  selector:
+    app: mysqld-exporter
+  ports:
+  - name: http
+    port: 9104

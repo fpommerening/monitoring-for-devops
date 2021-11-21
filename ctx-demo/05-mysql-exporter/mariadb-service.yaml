@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mariadb-svc
+spec:
+  selector:
+    app: mariadb
+  ports:
+  - name: sql
+    port: 3306

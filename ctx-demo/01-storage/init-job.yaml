@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-workspace-job
+spec:
+  activeDeadlineSeconds: 180
+  template:
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.28
+          command: ["sh", "-c", "/home/init.sh"]
+          volumeMounts:
+          - name: init-sh
+            mountPath: /home/init.sh
+            subPath: init.sh
+          - name: workspace
+            mountPath: /data
+      volumes:
+        - name: init-sh
+          configMap:
+            name: init-workspace-cm
+            defaultMode: 0777
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+      restartPolicy: OnFailure  

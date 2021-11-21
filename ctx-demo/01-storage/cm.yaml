@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  init.sh: |-
+    #!/bin/sh
+    cd /data/
+    mkdir prometheus
+  prometheus.yaml: |-
+    test
+      test
+kind: ConfigMap
+metadata:
+  name: init-workspace-cm

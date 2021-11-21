@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: code-server-ir
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`codeserver.demo-apps.de`)
+    kind: Rule
+    services:
+    - name: code-server-svc
+      port: 8080

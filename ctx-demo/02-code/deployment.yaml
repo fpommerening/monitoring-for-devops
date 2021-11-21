@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server-dep
+spec:
+  selector:
+    matchLabels:
+      app: code-server
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      containers:
+        - image: codercom/code-server
+          name: app
+          volumeMounts:
+            - name: workspace
+              mountPath: /home/coder/workspace
+            - name: cfg
+              mountPath: /home/coder/.config/code-server/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: cfg
+          configMap:
+            name: code-server-cm

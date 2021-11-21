@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: app
+          image: prom/prometheus:v2.31.1
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/prometheus/cfg/
+          ports:
+            - name: http
+              containerPort: 9090
+          args:
+            - "--config.file=/etc/prometheus/cfg/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+            - "--web.console.templates=/usr/share/prometheus/consoles"
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/prometheus/prometheus.yml /shared/prometheus.yml"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:

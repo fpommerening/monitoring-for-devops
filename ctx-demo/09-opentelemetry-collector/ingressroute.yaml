@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: opentelemetry-collector-ir
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`otel-collector.demo-apps.de`)
+    kind: Rule
+    services:
+    - name: opentelemetry-collector-svc
+      port: 4317

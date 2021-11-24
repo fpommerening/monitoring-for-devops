@@ -6,8 +6,10 @@ data:
     rm -R *
     mkdir prometheus
     mkdir blackbox-exporter
+    mkdir opentelemetry
     cp /template/prometheus.yml /data/prometheus/prometheus.yml
     cp /template/blackbox.yml /data/blackbox-exporter/blackbox.yml
+    cp /template/opentelemetry.yaml /data/opentelemetry/otel-collector-config.yaml
   prometheus.yml: |-
     global:
       scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -42,6 +44,25 @@ data:
         timeout: 5s
         icmp:
           preferred_ip_protocol: "ip4"
+  opentelemetry.yaml: |-
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    processors:
+
+    exporters:
+      otlp:
+        endpoint: otelcol:4317
+
+    extensions:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [otlp]  
 kind: ConfigMap
 metadata:
   name: init-workspace-cm

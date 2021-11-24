@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-collector-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opentelemetry-collector
+  template:
+    metadata:
+      labels:
+        app: opentelemetry-collector
+    spec:
+      containers:
+        - name: app
+          image: otel/opentelemetry-collector:0.39.0
+          ports:
+            - name: otel-grpc
+              containerPort: 4317
+            - name: otel-http
+              containerPort: 4318
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/opentelemetry
+          args:
+            - "--config=/etc/opentelemetry/otel-collector-config.yaml"
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/opentelemetry/otel-collector-config.yaml /shared/otel-collector-config.yaml"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:               

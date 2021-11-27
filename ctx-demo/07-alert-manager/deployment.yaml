@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+        - name: app
+          image: prom/alertmanager:v0.23.0
+          ports:
+            - name: http
+              containerPort: 9093
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/alertmanager
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/alertmanager/*.* /shared/"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:               

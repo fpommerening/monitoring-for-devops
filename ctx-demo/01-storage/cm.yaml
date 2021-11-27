@@ -7,9 +7,11 @@ data:
     mkdir prometheus
     mkdir blackbox-exporter
     mkdir opentelemetry
+    mkdir alertmanager
     cp /template/prometheus.yml /data/prometheus/prometheus.yml
     cp /template/blackbox.yml /data/blackbox-exporter/blackbox.yml
     cp /template/opentelemetry.yaml /data/opentelemetry/otel-collector-config.yaml
+    cp /template/alertmanager.yaml /data/alertmanager/alertmanager.yaml
   prometheus.yml: |-
     global:
       scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -62,7 +64,19 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          exporters: [otlp]  
+          exporters: [otlp]
+  alertmanager.yml: |-
+    route:
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
+      receiver: 'web.hook'
+    receivers:
+    - name: 'web.hook'
+      webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+    inhibit_rules: []
 kind: ConfigMap
 metadata:
   name: init-workspace-cm

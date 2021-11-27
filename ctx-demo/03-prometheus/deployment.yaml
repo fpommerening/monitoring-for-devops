@@ -29,7 +29,7 @@ spec:
       initContainers:
         - name: init-cfg
           image: busybox:1.28
-          command: ["sh", "-c", "cp /workspace/prometheus/prometheus.yml /shared/prometheus.yml"]
+          command: ["sh", "-c", "cp /workspace/prometheus/*.* /shared/"]
           volumeMounts:
             - name: shared
               mountPath: /shared

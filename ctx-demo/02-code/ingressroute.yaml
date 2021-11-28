@@ -6,7 +6,7 @@ spec:
   entryPoints:
   - web
   routes:
-  - match: Host(`codeserver.demo-apps.de`)
+  - match: Host(`code.demo-apps.de`)
     kind: Rule
     services:
     - name: code-server-svc

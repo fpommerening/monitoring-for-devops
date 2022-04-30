@@ -7,31 +7,27 @@ namespace FP.Monitoring.PrometheusNet.Business
 {
     public class MeetupRepository
     {
-        private List<Meetup> _meetups = new List<Meetup>();
+        private List<Meetup> _meetups = new();
 
-        public async Task AddMeetup(string title, string speaker, string loaction, DateTime start, DateTime end)
+        public async Task AddMeetup(string title, string speaker, string location, DateTime start, DateTime end)
         {
             _meetups.Add(new Meetup
             {
                 Title = title,
                 Speaker = speaker,
-                Location = loaction,
+                Location = location,
                 Start = start,
                 End = end
             });
 
-            MyMetrics.MeetupsCount.WithLabels(loaction).Inc();
+            MyMetrics.MeetupsCount.WithLabels(location).Inc();
 
             await Task.Delay(TimeSpan.FromMilliseconds(500));
         }
 
-        public void CheckMeetups()
+        public int Count(Func<Meetup, bool> predicate)
         {
-            while (true)
-            {
-                MyMetrics.MeetupsInFutureCount.Set(_meetups.Count(x => x.Start > DateTime.UtcNow));
-                System.Threading.Thread.Sleep(TimeSpan.FromMinutes(1));
-            }
+            return _meetups.Count(predicate);
         }
     }
 }

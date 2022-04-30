@@ -22,7 +22,6 @@ namespace FP.Monitoring.PrometheusNet.Services
 
         public override async Task<GreetAttendeeResponse> GreetAttendee(GreetAttendeeRequest request, ServerCallContext context)
         {
-
             using (MyMetrics.GreetingDuration.NewTimer())
             {
                 var greeting = $"Hallo to {string.Join(',', request.Names)}";

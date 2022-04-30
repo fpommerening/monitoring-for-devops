@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using FP.Monitoring.PrometheusNet.Business;
+﻿using FP.Monitoring.PrometheusNet.Business;
 using FP.Monitoring.PrometheusNet.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +15,7 @@ namespace FP.Monitoring.PrometheusNet
         {
             services.AddGrpc();
             services.AddSingleton<MeetupRepository>();
+            services.AddHostedService<MetricsService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -37,13 +37,6 @@ namespace FP.Monitoring.PrometheusNet
                 {
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
-            });
-
-            var repo = app.ApplicationServices.GetRequiredService<MeetupRepository>();
-
-            Task.Run(() =>
-            {
-                repo.CheckMeetups();
             });
         }
     }

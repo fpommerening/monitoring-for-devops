@@ -1,5 +1,3 @@
-using System;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 

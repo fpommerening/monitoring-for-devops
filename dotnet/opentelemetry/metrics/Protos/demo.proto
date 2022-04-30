@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "FP.Monitoring.OpenTelemetryMetrics.Contract";
+
+package demo;
+
+service DemoService {
+  // Sends a greeting
+  rpc GreetAttendee (GreetAttendeeRequest) returns (GreetAttendeeResponse);
+  rpc ScheduleMeetup (ScheduleMeetupRequest) returns (ScheduleMeetupResponse);
+}
+
+message GreetAttendeeRequest {
+	repeated string names = 1;
+}
+
+message GreetAttendeeResponse {
+  string message = 1;
+}
+
+message ScheduleMeetupRequest {
+	string title = 1;	
+	string speaker = 2;
+	string location = 3;
+	google.protobuf.Timestamp  start = 4;
+	google.protobuf.Timestamp  end = 5;
+}
+
+message ScheduleMeetupResponse {
+	google.protobuf.Timestamp  created_at = 1; 
+}

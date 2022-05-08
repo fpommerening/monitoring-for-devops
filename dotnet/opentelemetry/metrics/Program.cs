@@ -32,10 +32,7 @@ var app = builder.Build();
 app.MapGrpcService<DemoService>();
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
-var repo = app.Services.GetRequiredService<MeetupRepository>();
-
 
 app.UseOpenTelemetryPrometheusScrapingEndpoint();
-
 
 app.Run();

@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-workspace-job
+  labels:
+    {{- include "storage.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+        - name: app
+          image: busybox:1.28
+          command: ["sh", "-c", "/template/init.sh"]
+          volumeMounts:
+          - name: init
+            mountPath: /template
+          - name: workspace
+            mountPath: /data
+      volumes:
+        - name: init
+          configMap:
+            name: init-workspace-cm
+            defaultMode: 0777
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+      restartPolicy: OnFailure  

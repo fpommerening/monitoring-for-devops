@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssh-jumpbox-dep
+  namespace: windows
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssh-jumpbox
+  template:
+    metadata:
+      labels:
+        app: ssh-jumpbox
+    spec:
+      containers:
+        - name: app
+          image: fpommerening/container-training:jumpbox
+          ports:
+            - name: ssh
+              containerPort: 22
+            - name: http
+              containerPort: 9182
+          volumeMounts:
+            - name: ssh-conf
+              mountPath: /etc/ssh/sshd_config.d
+          env:
+            - name: SSH_PASSWORD
+              value: "Jump2Win"
+      volumes:
+        - name: ssh-conf
+          configMap:
+            name: ssh-jumpbox-config
+      

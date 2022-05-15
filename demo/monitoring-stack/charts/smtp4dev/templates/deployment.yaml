@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "smtp4dev.fullname" . }}-dep
+  labels:
+    {{- include "smtp4dev.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+   matchLabels:
+      {{- include "smtp4dev.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "smtp4dev.selectorLabels" . | nindent 8 }}
+        app: smtp4dev
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: smtp
+              containerPort: 25
+            - name: imap
+              containerPort: 143
+            - name: http
+              containerPort: 80

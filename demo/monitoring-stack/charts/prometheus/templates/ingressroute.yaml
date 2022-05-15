@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "prometheus.fullname" . }}-ir
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`prometheus.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "prometheus.fullname" . }}
+      port: {{ .Values.service.port }}

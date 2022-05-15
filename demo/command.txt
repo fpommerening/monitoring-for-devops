@@ -1,0 +1,7 @@
+helm upgrade --namespace demo --install -f ./demo.yaml --create-namespace monitoring-stack ./monitoring-stack
+
+ssh -R 0.0.0.0:9177:127.0.0.1:5001 -J ssh@ssh.demo-apps.de:8022 ssh@monitoring-stack-jumpbox
+
+ssh -R 0.0.0.0:9182:127.0.0.1:9182 -J ssh@ssh.demo-apps.de:8022 ssh@ssh-jumpbox-svc.windows
+
+

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "prometheus.fullname" . }}
+  labels:
+    {{- include "prometheus.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "prometheus.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "prometheus.selectorLabels" . | nindent 8 }}
+        app: prometheus
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          args:
+            - "--config.file=/etc/prometheus/cfg/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+            - "--web.console.templates=/usr/share/prometheus/consoles"
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/prometheus/cfg/
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/prometheus/*.* /shared/"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:

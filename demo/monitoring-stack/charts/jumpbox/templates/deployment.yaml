@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jumpbox.fullname" . }}
+  labels:
+    {{- include "jumpbox.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "jumpbox.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jumpbox.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+            - name: http
+              containerPort: 9177
+              protocol: TCP
+          volumeMounts:
+            - name: ssh-conf
+              mountPath: /etc/ssh/sshd_config.d
+          env:
+            - name: SSH_PASSWORD
+              value: {{ .Values.password }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: ssh-conf
+          configMap:
+            name: ssh-jumpbox-config

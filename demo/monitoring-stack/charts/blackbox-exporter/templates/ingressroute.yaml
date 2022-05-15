@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "blackbox-exporter.fullname" . }}-ir
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`blackbox.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "blackbox-exporter.fullname" . }}
+      port: {{ .Values.service.port }}

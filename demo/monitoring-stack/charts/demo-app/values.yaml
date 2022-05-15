@@ -1,0 +1,28 @@
+
+replicaCount: 1
+
+image:
+  repository: fpommerening/monitoring-training
+  pullPolicy: Always
+  tag: ""
+
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "demo-apps-service-account"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  entryPoint: web
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

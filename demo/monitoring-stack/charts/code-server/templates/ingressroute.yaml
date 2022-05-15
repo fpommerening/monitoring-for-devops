@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "code-server.fullname" . }}-ir
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`code.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "code-server.fullname" . }}
+      port: {{ .Values.service.port }}

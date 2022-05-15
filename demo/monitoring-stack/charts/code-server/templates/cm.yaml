@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  config.yaml: |-
+    bind-addr: 127.0.0.1:8080
+    auth: password
+    password: P@ssw0rd
+    cert: false
+kind: ConfigMap
+metadata:
+  name: {{ include "code-server.fullname" . }}-cm
+  labels:
+    {{- include "code-server.labels" . | nindent 4 }}

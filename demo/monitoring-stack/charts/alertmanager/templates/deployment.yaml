@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "alertmanager.fullname" . }}
+  labels:
+    {{- include "alertmanager.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "alertmanager.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "alertmanager.selectorLabels" . | nindent 8 }}
+        app: alertmanager
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 9093
+              protocol: TCP
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/alertmanager
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/alertmanager/*.* /shared/"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:

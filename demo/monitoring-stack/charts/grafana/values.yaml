@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: grafana/grafana
+  pullPolicy: IfNotPresent
+  tag: ""
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  entryPoint: web
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

@@ -1,1 +1,0 @@
-ssh -R 0.0.0.0:5001:127.0.0.1:5001 -J ssh@ssh.demo-apps.de:8022 ssh@ssh-jumpbox-child-svc

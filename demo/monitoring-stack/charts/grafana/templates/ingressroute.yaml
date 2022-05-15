@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "grafana.fullname" . }}-ir
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`grafana.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "grafana.fullname" . }}
+      port: {{ .Values.service.port }}

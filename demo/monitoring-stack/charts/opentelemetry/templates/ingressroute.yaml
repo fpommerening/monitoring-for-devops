@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "opentelemetry.fullname" . }}-ir
+  labels:
+    {{- include "opentelemetry.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`otel.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "opentelemetry.fullname" . }}
+      port: {{ .Values.service.grpc }}
+      scheme: h2c

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "code-server.fullname" . }}-dep
+  labels:
+    {{- include "code-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+   matchLabels:
+      {{- include "code-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "code-server.selectorLabels" . | nindent 8 }}
+        app: code-server
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: workspace
+              mountPath: /home/coder/workspace
+            - name: cfg
+              mountPath: /home/coder/.config/code-server/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: cfg
+          configMap:
+            name: {{ include "code-server.fullname" . }}-cm

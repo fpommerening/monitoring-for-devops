@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "jaeger.fullname" . }}-ir
+  labels:
+    {{- include "jaeger.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`jaeger.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: "{{ .Values.instance }}-query"
+      port: {{ .Values.service.port }}

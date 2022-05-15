@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: prom/blackbox-exporter
+  pullPolicy: IfNotPresent
+  tag: ""
+
+securityContext:
+  capabilities:
+    add: ["NET_RAW"]
+
+service:
+  type: ClusterIP
+  port: 9115
+
+ingress:
+  entryPoint: web
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+

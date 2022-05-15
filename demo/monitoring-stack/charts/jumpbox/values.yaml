@@ -1,0 +1,22 @@
+password: Jump2Demo
+
+replicaCount: 1
+
+image:
+  repository: fpommerening/container-training
+  pullPolicy: IfNotPresent
+  tag: ""
+ 
+
+service:
+  type: ClusterIP
+  ssh: 22
+  http: 9177
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

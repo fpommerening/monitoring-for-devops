@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opentelemetry.fullname" . }}
+  labels:
+    {{- include "opentelemetry.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "opentelemetry.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opentelemetry.selectorLabels" . | nindent 8 }}
+        app: opentelemetry-collector
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.service.grpc }}
+              protocol: TCP
+          volumeMounts:
+            - name: shared
+              mountPath: /etc/opentelemetry
+          args:
+            - "--config=/etc/opentelemetry/otel-collector-config.yaml"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+        - name: init-cfg
+          image: busybox:1.28
+          command: ["sh", "-c", "cp /workspace/opentelemetry/otel-collector-config.yaml /shared/otel-collector-config.yaml"]
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: workspace-pvc
+        - name: shared
+          emptyDir:               

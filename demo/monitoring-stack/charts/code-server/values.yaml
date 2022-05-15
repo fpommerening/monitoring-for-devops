@@ -1,0 +1,30 @@
+# Default values for code-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+password: "P@ssw0rd"
+
+
+replicaCount: 1
+
+image:
+  repository: codercom/code-server
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  host: code1.demo-apps.de
+  entryPoint: web
+
+  
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

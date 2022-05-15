@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssh-jumpbox-main-dep
+  namespace: jumpbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssh-jumpbox-main
+  template:
+    metadata:
+      labels:
+        app: ssh-jumpbox-main
+    spec:
+      containers:
+        - name: app
+          image: fpommerening/container-training:jumpbox
+          ports:
+            - name: ssh
+              containerPort: 22
+          volumeMounts:
+            - name: ssh-conf
+              mountPath: /etc/ssh/sshd_config.d
+          env:
+            - name: SSH_PASSWORD
+              value: "Jump2Main"
+      volumes:
+        - name: ssh-conf
+          configMap:
+            name: ssh-jumpbox-config
+      

@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "alertmanager.fullname" . }}-ir
+  labels:
+    {{- include "alertmanager.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+  - {{ .Values.ingress.entryPoint }}
+  routes:
+  - match: "Host(`alertmanager.{{ .Values.global.baseUrl }}`)" 
+    kind: Rule
+    services:
+    - name: {{ include "alertmanager.fullname" . }}
+      port: {{ .Values.service.port }}

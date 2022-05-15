@@ -1,0 +1,9 @@
+instance: jaeger
+
+service:
+  type: ClusterIP
+  port: 16686
+
+ingress:
+  host: jaeger.demo-apps.de
+  entryPoint: web

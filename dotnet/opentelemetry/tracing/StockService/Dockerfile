@@ -3,4 +3,4 @@ EXPOSE 6001/TCP
 WORKDIR /app/
 COPY out ./
 
-ENTRYPOINT ["./PaymentService"]
+ENTRYPOINT ["./StockService"]

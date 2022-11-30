@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracing-ui-dep
+spec:
+  selector:
+    matchLabels:
+      stack: tracing
+      app: ui
+  template:
+    metadata:
+      labels:
+        stack: tracing
+        app: ui
+    spec:
+      containers:
+      - image: ghcr.io/fpommerening/fpommerening/monitoring-for-devops:tracing-ui
+        imagePullPolicy: Always
+        name: app
+        ports:
+        - name: app
+          containerPort: 5001
+        volumeMounts:
+        - name: cfg
+          mountPath: "/app/appsettings.Production.json"
+          subPath: ui.appsettings.json
+      volumes:
+      - name: cfg
+        configMap:
+          name: tracing-cm
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracing-stock-dep
+spec:
+  selector:
+    matchLabels:
+      stack: tracing
+      app: stock
+  template:
+    metadata:
+      labels:
+        stack: tracing
+        app: stock
+    spec:
+      containers:
+      - image: ghcr.io/fpommerening/fpommerening/monitoring-for-devops:tracing-stockservice
+        imagePullPolicy: Always
+        name: app
+        ports:
+        - name: app
+          containerPort: 6001
+        volumeMounts:
+        - name: cfg
+          mountPath: "/app/appsettings.Production.json"
+          subPath: stock.appsettings.json
+      volumes:
+      - name: cfg
+        configMap:
+          name: tracing-cm
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracing-payment-dep
+spec:
+  selector:
+    matchLabels:
+      stack: tracing
+      app: payment
+  template:
+    metadata:
+      labels:
+        stack: tracing
+        app: payment
+    spec:
+      containers:
+      - image: ghcr.io/fpommerening/fpommerening/monitoring-for-devops:tracing-paymentservice
+        imagePullPolicy: Always
+        name: app
+        ports:
+        - name: app
+          containerPort: 7001
+        volumeMounts:
+        - name: cfg
+          mountPath: "/app/appsettings.Production.json"
+          subPath: payment.appsettings.json
+      volumes:
+      - name: cfg
+        configMap:
+          name: tracing-cm
+---

@@ -48,7 +48,7 @@ jobs:
     
     - name: Extract metadata Payment Service
       id: meta_payment
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       with:
          images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
          tags: |
@@ -56,7 +56,7 @@ jobs:
 
     - name: Extract metadata Stock service
       id: meta_stock
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       with:
          images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
          tags: |
@@ -64,7 +64,7 @@ jobs:
 
     - name: Extract metadata UI
       id: meta_ui
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       with:
          images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
          tags: |

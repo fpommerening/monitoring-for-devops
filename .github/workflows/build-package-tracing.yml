@@ -1,0 +1,37 @@
+name: "tracing"
+
+on:
+  push:
+    branches: [ main ]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: |
+        dotnet restore dotnet/opentelemetry/tracing/PaymentService/PaymentService.csproj
+        dotnet restore dotnet/opentelemetry/tracing/StockService/StockService.csproj
+        dotnet restore dotnet/opentelemetry/tracing/UI/UI.csproj
+    - name: Build
+      run: |
+        dotnet build --no-restore dotnet/opentelemetry/tracing/PaymentService/PaymentService.csproj
+        dotnet build --no-restore dotnet/opentelemetry/tracing/StockService/StockService.csproj
+        dotnet build --no-restore dotnet/opentelemetry/tracing/UI/UI.csproj
+    - name: Publish
+      run: |
+        dotnet publish -c release -o out/PaymentService dotnet/opentelemetry/tracing/PaymentService/PaymentService.csproj
+        dotnet publish -c release -o out/StockService dotnet/opentelemetry/tracing/StockService/StockService.csproj
+        dotnet publish -c release -o out/UI dotnet/opentelemetry/tracing/UI/UI.csproj

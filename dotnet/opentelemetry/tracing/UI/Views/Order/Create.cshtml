@@ -1,0 +1,43 @@
+﻿@model FP.Monitoring.Trace.UI.Models.OrderViewModel
+
+
+<form method="post" asp-controller="Order" asp-action="Create">
+    <input input asp-for="ProductId" type="hidden" />
+    <div class="form-group row">
+        <label asp-for="ProductName" class="col-3 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="ProductName" class="form-control-plaintext" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Quantity" class="col-3 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="Quantity" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Customer" class="col-3 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="Customer" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="CardType" class="col-3 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="CardType" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="CardNumber" class="col-3 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="CardNumber" class="form-control" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>

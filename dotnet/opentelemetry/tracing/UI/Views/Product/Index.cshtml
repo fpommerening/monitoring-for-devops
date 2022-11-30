@@ -1,0 +1,31 @@
+﻿@model FP.Monitoring.Trace.UI.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Preis in €</th>
+        <th>Anzahl</th>
+        <th>&nbsp;</th>
+    </tr>
+    
+@foreach (var product in @Model.Products)
+{
+<tr>
+    <td>@product.Name</td>
+    <td>@product.Price.ToString("C")</td>
+    <td>@product.Quantity</td>
+    <td>
+        @Html.ActionLink("Bestellen", "Create", "Order", new { productId = @product.Id }, new { @class = "btn btn-primary m-2" })
+    </td>
+</tr>
+
+}
+    
+
+</table>
+
+

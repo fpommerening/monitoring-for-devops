@@ -24,7 +24,11 @@ builder.Services.AddOpenTelemetryMetrics(options =>
     options.AddAspNetCoreInstrumentation();
     options.AddMeter("MyMeetupMetrics");
     options.AddMeter("gRPCMetrics");
-    options.AddView("greeeting_duration", new ExplicitBucketHistogramConfiguration {Boundaries = new double[] {50,100,500, 1_000, 2_000, 5_000, 10_000}});
+    options.AddView("greeeting_duration", 
+        new ExplicitBucketHistogramConfiguration
+        {
+            Boundaries = new double[] {50,100,500, 1_000, 2_000, 5_000, 10_000}
+        });
     options.AddPrometheusExporter();
 });
 

@@ -2,10 +2,10 @@
 {
     public class Meetup
     {
-        public string Title { get; set; }
-        public string Speaker { get; set; }
+        public string? Title { get; set; }
+        public string? Speaker { get; set; }
 
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
         public DateTime Start { get; set; }
 

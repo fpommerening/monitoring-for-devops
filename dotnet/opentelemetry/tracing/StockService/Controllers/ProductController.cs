@@ -13,11 +13,9 @@ namespace FP.Monitoring.Trace.StockService.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        
         private readonly ILogger<ProductController> _logger;
         private readonly ProductRepository _repository;
         
-
         public ProductController(ILogger<ProductController> logger, ProductRepository repository)
         {
             _logger = logger;
@@ -32,7 +30,7 @@ namespace FP.Monitoring.Trace.StockService.Controllers
             return products.ToList();
         }
 
-        [HttpPut("{productId}")]
+        [HttpPut("{productId:guid}")]
         public async Task<IActionResult> OrderProduct(Guid productId, [FromBody] int quantity)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(50));

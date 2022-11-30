@@ -25,17 +25,17 @@ namespace FP.Monitoring.Trace.PaymentService
 
             services.AddHttpClient("visa", c =>
             {
-                c.BaseAddress = new Uri("http://visa-service.demo-apps.de");
+                c.BaseAddress = new Uri(Configuration["VisaServiceUrl"]);
             });
 
             services.AddHttpClient("master", c =>
             {
-                c.BaseAddress = new Uri("http://master-service.demo-apps.de");
+                c.BaseAddress = new Uri(Configuration["MasterServiceUrl"]);
             });
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-            services.AddTracing("http://otel.t.container-training.de", "PaymentService");
+            services.AddTracing(Configuration["OpenTelemetryUrl"], "PaymentService");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

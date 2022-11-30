@@ -15,7 +15,7 @@ namespace FP.Monitoring.Trace.UI.Business
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private JsonSerializerOptions _jsonSerializerOptions = new()
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
@@ -54,8 +54,8 @@ namespace FP.Monitoring.Trace.UI.Business
             var products = JsonSerializer.Deserialize<Product[]>(await productsResponse.Content.ReadAsStringAsync(), _jsonSerializerOptions);
             var product = products.Single(x => x.Id == id);
 
-            var orderReponse = await stockClient.PutAsync($"Product/{id}", new StringContent(quantity.ToString(), Encoding.UTF8, "application/json"));
-            orderReponse.EnsureSuccessStatusCode();
+            var orderResponse = await stockClient.PutAsync($"Product/{id}", new StringContent(quantity.ToString(), Encoding.UTF8, "application/json"));
+            orderResponse.EnsureSuccessStatusCode();
 
             await Task.Delay(250);
             var payment = new Payment

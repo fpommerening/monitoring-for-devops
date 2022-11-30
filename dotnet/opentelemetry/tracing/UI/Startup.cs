@@ -23,18 +23,18 @@ namespace FP.Monitoring.Trace.UI
         {
             services.AddControllersWithViews();
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            services.AddTracing("http://otel.monitor.container-training.de", "UI");
+            services.AddTracing(Configuration["OpenTelemetryUrl"], "UI");
 
             services.AddSingleton<OrderRepository>();
 
             services.AddHttpClient("stockservice", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:6001");
+                c.BaseAddress = new Uri(Configuration["StockServiceUrl"]);
             });
 
             services.AddHttpClient("paymentservice", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:7001");
+                c.BaseAddress = new Uri(Configuration["PaymentServiceUrl"]);
             });
         }
 

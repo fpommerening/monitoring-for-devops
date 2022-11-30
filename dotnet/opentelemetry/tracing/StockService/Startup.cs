@@ -18,16 +18,14 @@ namespace FP.Monitoring.Trace.StockService
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllers();
-
+            
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-            services.AddTracing("http://otel.t.container-training.de", "StockService");
-
+            services.AddTracing(Configuration["OpenTelemetryUrl"], "StockService");
+            
             services.AddSingleton<ProductRepository>();
         }
 

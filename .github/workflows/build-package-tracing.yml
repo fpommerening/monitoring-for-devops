@@ -32,6 +32,66 @@ jobs:
         dotnet build --no-restore dotnet/opentelemetry/tracing/UI/UI.csproj
     - name: Publish
       run: |
-        dotnet publish -c release -o out/PaymentService dotnet/opentelemetry/tracing/PaymentService/PaymentService.csproj
-        dotnet publish -c release -o out/StockService dotnet/opentelemetry/tracing/StockService/StockService.csproj
-        dotnet publish -c release -o out/UI dotnet/opentelemetry/tracing/UI/UI.csproj
+        dotnet publish -c release -o dotnet/opentelemetry/tracing/PaymentService/out/ dotnet/opentelemetry/tracing/PaymentService/PaymentService.csproj
+        dotnet publish -c release -o dotnet/opentelemetry/tracing/StockService/out/ dotnet/opentelemetry/tracing/StockService/StockService.csproj
+        dotnet publish -c release -o dotnet/opentelemetry/tracing/UI/out/ dotnet/opentelemetry/tracing/UI/UI.csproj
+
+  - name: Login to GHCR
+      uses: docker/login-action@v2.1.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Extract metadata Payment Service
+      id: meta_payment
+      uses: docker/metadata-action@v3
+      with:
+         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=tracing-paymentservice
+
+    - name: Extract metadata Stock service
+      id: meta_stock
+      uses: docker/metadata-action@v3
+      with:
+         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=tracing-stockservice
+
+    - name: Extract metadata UI
+      id: meta_ui
+      uses: docker/metadata-action@v3
+      with:
+         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=tracing-ui
+
+    - name: Build and push Payment Service
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/tracing/PaymentService/
+        push: true
+        tags: ${{ steps.meta_payment.outputs.tags }}
+        labels: ${{ steps.meta_payment.outputs.labels }}
+
+    - name: Build and push Stock service
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/tracing/StockService/
+        push: true
+        tags: ${{ steps.meta_stock.outputs.tags }}
+        labels: ${{ steps.meta_stock.outputs.labels }}
+      
+    - name: Build and push UI
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/tracing/UI/
+        push: true
+        tags: ${{ steps.meta_ui.outputs.tags }}
+        labels: ${{ steps.meta_ui.outputs.labels }}
+
+

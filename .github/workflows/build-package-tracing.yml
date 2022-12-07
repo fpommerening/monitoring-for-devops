@@ -50,7 +50,7 @@ jobs:
       id: meta_payment
       uses: docker/metadata-action@v4
       with:
-         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
          tags: |
            type=raw,value=tracing-paymentservice
 
@@ -58,7 +58,7 @@ jobs:
       id: meta_stock
       uses: docker/metadata-action@v4
       with:
-         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
          tags: |
            type=raw,value=tracing-stockservice
 
@@ -66,7 +66,7 @@ jobs:
       id: meta_ui
       uses: docker/metadata-action@v4
       with:
-         images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
          tags: |
            type=raw,value=tracing-ui
 

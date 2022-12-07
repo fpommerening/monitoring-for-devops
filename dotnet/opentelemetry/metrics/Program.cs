@@ -29,6 +29,7 @@ builder.Services.AddOpenTelemetryMetrics(options =>
         {
             Boundaries = new double[] {50,100,500, 1_000, 2_000, 5_000, 10_000}
         });
+    options.AddRuntimeInstrumentation();
     options.AddPrometheusExporter();
 });
 

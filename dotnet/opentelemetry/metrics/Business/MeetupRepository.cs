@@ -8,7 +8,7 @@
                 description: "Number of meetups in future.", observeValue: () => _meetups.Count(x=>x.Start > DateTime.UtcNow));
         }
 
-        private List<Meetup> _meetups = new();
+        private readonly List<Meetup> _meetups = new();
 
         public async Task AddMeetup(string title, string speaker, string loaction, DateTime start, DateTime end)
         {

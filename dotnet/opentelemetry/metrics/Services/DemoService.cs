@@ -2,9 +2,7 @@ using FP.Monitoring.OpenTelemetryMetrics.Business;
 using FP.Monitoring.OpenTelemetryMetrics.Contract;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Microsoft.Extensions.Logging;
 
-//using Prometheus;
 
 namespace FP.Monitoring.OpenTelemetryMetrics.Services
 {

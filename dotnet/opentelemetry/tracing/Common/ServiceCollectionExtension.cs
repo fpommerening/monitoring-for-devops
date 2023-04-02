@@ -9,16 +9,16 @@ namespace FP.Monitoring.Trace.Common
     {
         public static void AddTracing(this IServiceCollection services, string url, string servicename)
         {
-            services.AddOpenTelemetryTracing((builder) => builder
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(servicename))
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddSource(DemoActivitySource.ActivitySourceName)
-                .AddOtlpExporter(otlpOptions =>
-                {
-                    otlpOptions.Endpoint = new Uri(url);
-                })
-            );
+            services.AddOpenTelemetry().WithTracing(builder =>
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(servicename))
+                    .AddSource(DemoActivitySource.ActivitySourceName)
+                    .SetSampler(new AlwaysOnSampler())
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddOtlpExporter(otlpOptions =>
+                    {
+                        otlpOptions.Endpoint = new Uri(url);
+                    }));
         }
     }
 }

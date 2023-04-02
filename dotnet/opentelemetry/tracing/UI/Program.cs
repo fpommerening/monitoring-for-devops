@@ -1,20 +1,44 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using FP.Monitoring.Trace.Common;
+using FP.Monitoring.Trace.UI.Business;
 
-namespace FP.Monitoring.Trace.UI
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddTracing(builder.Configuration["OpenTelemetryUrl"], "UI");
+
+builder.Services.AddSingleton<OrderRepository>();
+
+builder.Services.AddHttpClient("stockservice", c =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    c.BaseAddress = new Uri(builder.Configuration["StockServiceUrl"]);
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.Services.AddHttpClient("paymentservice", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration["PaymentServiceUrl"]);
+});
+
+var app = builder.Build();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+}
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Product}/{action=Index}/{id?}");
+});
+
+app.Run();

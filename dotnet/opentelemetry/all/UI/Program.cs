@@ -21,7 +21,7 @@ builder.Services.AddTransient<OrderRepository>();
 TelemetryBuilder
     .ForConfiguration("UI", builder.Configuration["OpenTelemetryUrl"])
     .AddTracing(builder.Services, true, false)
-    .AddMetrics(builder.Services)
+    .AddMetrics(builder.Services, true, true, false, false)
     .AddLogging(builder.Logging)
     .Build();
 

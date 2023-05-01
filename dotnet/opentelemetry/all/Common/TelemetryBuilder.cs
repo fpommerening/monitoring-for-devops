@@ -39,13 +39,19 @@ public class TelemetryBuilder
     private IServiceCollection? Services { get; set; }
     
     private bool AddCustomMetrics { get; set; }
+    private bool AddRuntimeMetrics { get; set; }
     private bool AddHttpClientMetrics { get; set; }
     private bool AddAspNetCoreMetrics { get; set; }
 
-    public TelemetryBuilder AddMetrics(IServiceCollection services, bool addHttpClientMetrics = true, bool addAspNetCoreMetrics = true)
+    public TelemetryBuilder AddMetrics(IServiceCollection services,
+        bool addCustomMetrics = true,
+        bool addRuntimeMetrics = true,
+        bool addHttpClientMetrics = true, 
+        bool addAspNetCoreMetrics = true)
     {
         Services = services;
-        AddCustomMetrics = true;
+        AddCustomMetrics = addCustomMetrics;
+        AddRuntimeMetrics = addRuntimeMetrics;
         AddHttpClientMetrics = addHttpClientMetrics;
         AddAspNetCoreMetrics = addAspNetCoreMetrics;
         return this;
@@ -68,7 +74,7 @@ public class TelemetryBuilder
             var builder = Services.AddOpenTelemetry()
                 .ConfigureResource(rb => rb.AddEnvironmentVariableDetector().AddService(ServiceName));
 
-            if (AddCustomMetrics || AddHttpClientMetrics || AddAspNetCoreMetrics)
+            if (AddCustomMetrics || AddRuntimeMetrics || AddHttpClientMetrics || AddAspNetCoreMetrics)
             {
                 builder.WithMetrics(metricsBuilder =>
                 {
@@ -80,6 +86,17 @@ public class TelemetryBuilder
                     {
                         metricsBuilder.AddHttpClientInstrumentation();    
                     }
+
+                    if (AddRuntimeMetrics)
+                    {
+                        metricsBuilder.AddRuntimeInstrumentation();    
+                    }
+
+                    if (AddCustomMetrics)
+                    {
+                        metricsBuilder.AddMeter(Instrumentation.MeterName);
+                    }
+                    
                     metricsBuilder.AddOtlpExporter(opt =>
                     {
                         opt.Endpoint = new Uri(Url);

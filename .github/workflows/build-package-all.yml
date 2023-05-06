@@ -1,0 +1,97 @@
+name: "all"
+
+on:
+  push:
+    branches: [ main ]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: |
+        dotnet restore dotnet/opentelemetry/all/PaymentService/PaymentService.csproj
+        dotnet restore dotnet/opentelemetry/all/StockService/StockService.csproj
+        dotnet restore dotnet/opentelemetry/all/UI/UI.csproj
+    - name: Build
+      run: |
+        dotnet build --no-restore dotnet/opentelemetry/all/PaymentService/PaymentService.csproj
+        dotnet build --no-restore dotnet/opentelemetry/all/StockService/StockService.csproj
+        dotnet build --no-restore dotnet/opentelemetry/all/UI/UI.csproj
+    - name: Publish
+      run: |
+        dotnet publish -c release -o dotnet/opentelemetry/all/PaymentService/out/ dotnet/opentelemetry/all/PaymentService/PaymentService.csproj
+        dotnet publish -c release -o dotnet/opentelemetry/all/StockService/out/ dotnet/opentelemetry/all/StockService/StockService.csproj
+        dotnet publish -c release -o dotnet/opentelemetry/all/UI/out/ dotnet/opentelemetry/all/UI/UI.csproj
+
+    - name: Login to GHCR
+      uses: docker/login-action@v2.1.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Extract metadata Payment Service
+      id: meta_payment
+      uses: docker/metadata-action@v4
+      with:
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=all-paymentservice
+
+    - name: Extract metadata Stock service
+      id: meta_stock
+      uses: docker/metadata-action@v4
+      with:
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=all-stockservice
+
+    - name: Extract metadata UI
+      id: meta_ui
+      uses: docker/metadata-action@v4
+      with:
+         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+         tags: |
+           type=raw,value=all-ui
+
+    - name: Build and push Payment Service
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/all/PaymentService/
+        push: true
+        tags: ${{ steps.meta_payment.outputs.tags }}
+        labels: ${{ steps.meta_payment.outputs.labels }}
+
+    - name: Build and push Stock service
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/all/StockService/
+        push: true
+        tags: ${{ steps.meta_stock.outputs.tags }}
+        labels: ${{ steps.meta_stock.outputs.labels }}
+      
+    - name: Build and push UI
+      uses: docker/build-push-action@v3
+      with:
+        context: ./dotnet/opentelemetry/all/UI/
+        push: true
+        tags: ${{ steps.meta_ui.outputs.tags }}
+        labels: ${{ steps.meta_ui.outputs.labels }}
+
+

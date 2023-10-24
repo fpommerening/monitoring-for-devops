@@ -1,4 +1,5 @@
 using FP.Monitoring.All.Common;
+using FP.Monitoring.All.Contract;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
@@ -35,6 +36,11 @@ builder.Services.AddHttpClient("paymentservice", c =>
     c.BaseAddress = new Uri(builder.Configuration["PaymentServiceUrl"]);
 });
 
+builder.Services.AddGrpcClient<CustomerServices.CustomerServicesClient>(o =>
+{
+    o.Address = new Uri(builder.Configuration["CustomerServiceUrl"]);
+});
+
 var app = builder.Build();
 
 
@@ -46,8 +52,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 

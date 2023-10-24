@@ -25,17 +25,23 @@ public class TelemetryBuilder
     
     private bool AddCustomTracing { get; set; }
     private bool AddHttpClientTracing { get; set; }
+    
+    private bool AddGrpcClientTracing { get; set; }
     private bool AddAspNetCoreTracing { get; set; }
 
-    public TelemetryBuilder AddTracing(IServiceCollection services, bool addHttpClientTracing = true, bool addAspNetCoreTracing = true)
+    public TelemetryBuilder AddTracing(IServiceCollection services, 
+        bool addHttpClientTracing = true,
+        bool addAspNetCoreTracing = true,
+        bool addGrpcTracing = true)
     {
         Services = services;
         AddCustomTracing = true;
-        AddHttpClientTracing = addHttpClientTracing;
+        AddHttpClientTracing = addHttpClientTracing || addGrpcTracing;
         AddAspNetCoreTracing = addAspNetCoreTracing;
+        AddGrpcClientTracing = addGrpcTracing;
         return this;
     }
-    
+
     private IServiceCollection? Services { get; set; }
     
     private bool AddCustomMetrics { get; set; }
@@ -120,8 +126,17 @@ public class TelemetryBuilder
                     }
                     if (AddHttpClientTracing)
                     {
-                        traceBuilder.AddHttpClientInstrumentation();    
+                        traceBuilder.AddHttpClientInstrumentation();
                     }
+
+                    if (AddGrpcClientTracing)
+                    { 
+                        traceBuilder.AddGrpcClientInstrumentation(opt =>
+                        {
+                            opt.SuppressDownstreamInstrumentation = true;
+                        });
+                    }
+                    
                     traceBuilder.AddOtlpExporter(opt =>
                     {
                         opt.Endpoint = new Uri(Url);

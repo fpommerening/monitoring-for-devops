@@ -44,11 +44,11 @@
     <MudItem xs="2">
             @if (Model.IsValid == false)
             {
-                <MudChip Color="Color.Error">Kunde ungültig</MudChip>
+                <MudChip T="string" Color="Color.Error">Kunde ungültig</MudChip>
             }
              @if (Model.IsValid == true)
              {
-                 <MudChip Color="Color.Success">Kunde gültig</MudChip>
+                 <MudChip T="string" Color="Color.Success">Kunde gültig</MudChip>
              }
         </MudItem>
     <MudItem xs="4">

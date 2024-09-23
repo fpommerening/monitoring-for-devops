@@ -4,7 +4,7 @@ public class DelayGenerator
 {
     private int _min = 0;
     private int _max = 250;
-    private Random _random = new();
+    private readonly Random _random = new();
     public int Min
     {
         get => _min;

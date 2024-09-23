@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-bullseye-slim
+FROM mcr.microsoft.com/dotnet/8.0-bookworm-slim
 EXPOSE 7001/TCP
 WORKDIR /app/
 COPY out ./

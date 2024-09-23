@@ -1,18 +1,12 @@
 namespace CustomerService.Business;
 
-public class CreditRateProvider : ICreditRateProvider
+public class CreditRateProvider(IHttpClientFactory httpClientFactory) : ICreditRateProvider
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private static readonly Random Random = new();
 
-    public CreditRateProvider(IHttpClientFactory httpClientFactory)
-    {
-        _httpClientFactory = httpClientFactory;
-    }
-    
     public async Task<uint> GetRateValueAsync(Customer customer, Address address)
     {
-        var client = _httpClientFactory.CreateClient("credit-rate");
+        var client = httpClientFactory.CreateClient("credit-rate");
         var result = await client.GetAsync("/");
         if (result.IsSuccessStatusCode)
         {

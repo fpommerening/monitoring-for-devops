@@ -1,16 +1,10 @@
 namespace CustomerService.Business;
 
-public class Customer
+public class Customer(string firstName, string lastName)
 {
-    public Customer(string firstName, string lastName)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-    }
+    public string FirstName { get; set; } = firstName;
 
-    public string FirstName { get; set; }
-    
-    public string LastName { get; set; }
-    
+    public string LastName { get; set; } = lastName;
+
     public bool IsValid { get; set; }
 }

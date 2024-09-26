@@ -131,10 +131,7 @@ public class TelemetryBuilder
 
                     if (AddGrpcClientTracing)
                     { 
-                        traceBuilder.AddGrpcClientInstrumentation(opt =>
-                        {
-                            opt.SuppressDownstreamInstrumentation = true;
-                        });
+                        traceBuilder.AddGrpcClientInstrumentation();
                     }
                     
                     traceBuilder.AddOtlpExporter(opt =>

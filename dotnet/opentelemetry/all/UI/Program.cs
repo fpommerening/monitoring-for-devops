@@ -1,7 +1,5 @@
 using FP.Monitoring.All.Common;
 using FP.Monitoring.All.Contract;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
 using UI.Business;
@@ -21,7 +19,7 @@ builder.Services.AddTransient<OrderRepository>();
 
 TelemetryBuilder
     .ForConfiguration("UI", builder.Configuration["OpenTelemetryUrl"])
-    .AddTracing(builder.Services, true, false)
+    .AddTracing(builder.Services, true, false, true)
     .AddMetrics(builder.Services, true, true, false, false)
     .AddLogging(builder.Logging)
     .Build();

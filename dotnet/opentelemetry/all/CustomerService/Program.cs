@@ -19,7 +19,7 @@ builder.Services.AddHttpClient("credit-rate", c =>
 
 TelemetryBuilder
     .ForConfiguration("CustomerService", builder.Configuration["OpenTelemetryUrl"])
-    .AddTracing(builder.Services, false, true)
+    .AddTracing(builder.Services)
     .Build();
 
 var app = builder.Build();

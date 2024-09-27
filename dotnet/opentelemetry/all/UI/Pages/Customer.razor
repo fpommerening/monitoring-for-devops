@@ -1,7 +1,10 @@
 @page "/Customer"
+@using System.Diagnostics
 @using FP.Monitoring.All.Contract
+@using FP.Monitoring.All.Common
 
 @inject CustomerServices.CustomerServicesClient customerServiceCLient;
+@inject Instrumentation Instrumentation;
 
 <MudGrid>
     <MudItem xs="6">
@@ -75,6 +78,11 @@
 
     private async Task ValidateCustomer()
     {
+        Activity.Current = null;
+        
+        using var activity = Instrumentation.ActivitySource.CreateActivity("ValidateCustomer", ActivityKind.Producer);
+        activity?.AddTag("class", nameof(Customer));
+        
         var request = new RateCustomerRequest
         {
             Name = Model.LastName,

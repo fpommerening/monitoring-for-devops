@@ -83,7 +83,7 @@
     {
         Activity.Current = null;
         
-        using var activity = Instrumentation.ActivitySource.StartActivity("OrderProduct");
+        using var activity = Instrumentation.ActivitySource.CreateActivity("OrderProduct", ActivityKind.Producer);
         activity?.AddTag("class", nameof(Order));
         
         if (Model == null)
